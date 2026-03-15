@@ -3,6 +3,7 @@ bin/
 obj/
 publish/
 publish-selfcontained/
+publish-single/
 *.zip
 .vs/
 *.user
