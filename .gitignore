@@ -2,6 +2,8 @@
 bin/
 obj/
 publish/
+publish-selfcontained/
+*.zip
 .vs/
 *.user
 *.suo
