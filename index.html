@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sine Parameter Trainer</title>
+    <style>
+        :root {
+            --blue: #3B82F6;
+            --green: #10B981;
+            --red: #EF4444;
+            --orange: #F59E0B;
+            --purple: #8B5CF6;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-500: #6B7280;
+            --gray-700: #374151;
+            --gray-900: #111827;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: var(--gray-700);
+            line-height: 1.7;
+            background: var(--gray-50);
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #1E3A8A 0%, var(--blue) 100%);
+            color: white;
+            padding: 4rem 2rem 3rem;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.02em;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 1.5rem;
+        }
+
+        .hero .formula {
+            font-family: 'Cambria Math', 'Latin Modern Math', Georgia, serif;
+            font-size: 1.5rem;
+            background: rgba(255,255,255,0.15);
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            border-radius: 10px;
+            backdrop-filter: blur(4px);
+            margin-bottom: 1rem;
+        }
+
+        .hero .formula .param-a { color: #FCA5A5; font-weight: 700; }
+        .hero .formula .param-b { color: #FDE68A; font-weight: 700; }
+        .hero .formula .param-c { color: #6EE7B7; font-weight: 700; }
+        .hero .formula .param-d { color: #C4B5FD; font-weight: 700; }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .screenshot-wrapper {
+            text-align: center;
+            margin: -2rem auto 3rem;
+            padding: 0 1.5rem;
+            max-width: 950px;
+        }
+
+        .screenshot-wrapper img {
+            width: 100%;
+            max-width: 900px;
+            border-radius: 12px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.25);
+            border: 3px solid rgba(255,255,255,0.8);
+        }
+
+        section {
+            margin-bottom: 3rem;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            color: var(--gray-900);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--blue);
+            display: inline-block;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            color: var(--gray-900);
+            margin: 1.5rem 0 0.5rem;
+        }
+
+        p { margin-bottom: 1rem; }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.25rem;
+            margin-top: 1rem;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.25rem;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            border: 1px solid var(--gray-200);
+        }
+
+        .feature-card strong {
+            display: block;
+            color: var(--gray-900);
+            margin-bottom: 0.3rem;
+        }
+
+        .feature-card p {
+            font-size: 0.92rem;
+            margin: 0;
+            color: var(--gray-500);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+
+        th {
+            background: var(--blue);
+            color: white;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 0.65rem 1rem;
+            border-bottom: 1px solid var(--gray-200);
+            font-size: 0.92rem;
+        }
+
+        tr:last-child td { border-bottom: none; }
+        tr:nth-child(even) td { background: var(--gray-50); }
+
+        .steps {
+            counter-reset: step;
+            list-style: none;
+            padding: 0;
+        }
+
+        .steps > li {
+            counter-increment: step;
+            position: relative;
+            padding: 1rem 1rem 1rem 3.5rem;
+            margin-bottom: 0.75rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            border: 1px solid var(--gray-200);
+        }
+
+        .steps > li::before {
+            content: counter(step);
+            position: absolute;
+            left: 1rem;
+            top: 1rem;
+            width: 1.8rem;
+            height: 1.8rem;
+            background: var(--blue);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        code {
+            background: var(--gray-100);
+            padding: 0.15rem 0.45rem;
+            border-radius: 4px;
+            font-family: 'Cascadia Code', 'Consolas', monospace;
+            font-size: 0.88em;
+            color: var(--gray-900);
+        }
+
+        pre {
+            background: var(--gray-900);
+            color: #E5E7EB;
+            padding: 1rem 1.25rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 0.75rem 0 1rem;
+            font-family: 'Cascadia Code', 'Consolas', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+
+        .note {
+            background: #FFF7ED;
+            border-left: 4px solid var(--orange);
+            padding: 1rem 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1rem 0;
+            font-size: 0.92rem;
+        }
+
+        .note strong { color: var(--orange); }
+
+        .download-btn {
+            display: inline-block;
+            background: var(--blue);
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: background 0.2s;
+        }
+
+        .download-btn:hover { background: #2563EB; }
+
+        .param-table td:first-child { font-weight: 700; }
+
+        .tip-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .tip-list li {
+            padding: 0.4rem 0 0.4rem 1.5rem;
+            position: relative;
+        }
+
+        .tip-list li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--blue);
+            font-weight: 700;
+        }
+
+        .tech-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-top: 0.5rem;
+        }
+
+        .badge {
+            background: white;
+            border: 1px solid var(--gray-200);
+            padding: 0.35rem 0.9rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--gray-700);
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--gray-500);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--gray-200);
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 640px) {
+            .hero h1 { font-size: 2rem; }
+            .hero .formula { font-size: 1.15rem; }
+            h2 { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="hero">
+    <h1>Sine Parameter Trainer</h1>
+    <p>A desktop learning tool that helps students practice reading the parameters of a general sine function from its graph.</p>
+    <div class="formula">
+        f(t) = <span class="param-a">a</span> · sin( <span class="param-b">b</span> · ( t − <span class="param-c">c</span> ) ) + <span class="param-d">d</span>
+    </div>
+</div>
+
+<div class="screenshot-wrapper">
+    <img src="screenshot.png" alt="Screenshot of Sine Parameter Trainer showing a sine curve with draggable measurement crosshairs, parameter input fields, and score tracking">
+</div>
+
+<div class="container">
+
+    <!-- FEATURES -->
+    <section>
+        <h2>Features</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <strong>Random Curve Generation</strong>
+                <p>Each click of <em>New Problem</em> produces a fresh sine curve with randomised parameters.</p>
+            </div>
+            <div class="feature-card">
+                <strong>Colour-coded Formula</strong>
+                <p>The general formula is displayed with each parameter highlighted in its own colour, matching the input labels.</p>
+            </div>
+            <div class="feature-card">
+                <strong>Hideable Formula</strong>
+                <p>Uncheck <em>Show formula</em> for an extra challenge once the student is confident.</p>
+            </div>
+            <div class="feature-card">
+                <strong>Helper Formula</strong>
+                <p>The relationship <strong>b = 2π / P</strong> is shown alongside the main formula as a reminder.</p>
+            </div>
+            <div class="feature-card">
+                <strong>Draggable Crosshairs</strong>
+                <p>Two sets of dashed lines (red &amp; green) can be dragged on the plot to measure distances, with live (x, y) labels.</p>
+            </div>
+            <div class="feature-card">
+                <strong>Live Δx / Δy Readout</strong>
+                <p>Distances between the two crosshairs are displayed in real time — perfect for measuring period or amplitude.</p>
+            </div>
+            <div class="feature-card">
+                <strong>Smart Answer Checking</strong>
+                <p>Accepts equivalent representations and tells you exactly which parameters are wrong.</p>
+            </div>
+            <div class="feature-card">
+                <strong>Fraction Input</strong>
+                <p>Answers can be entered as decimals (<code>1.5</code>) or fractions (<code>3/2</code>).</p>
+            </div>
+            <div class="feature-card">
+                <strong>Score Tracking</strong>
+                <p>Keeps a running score of correct answers vs. total attempts across the session.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- PARAMETER RANGES -->
+    <section>
+        <h2>Parameter Ranges</h2>
+        <table class="param-table">
+            <thead>
+                <tr><th>Parameter</th><th>Role</th><th>Range</th><th>Type</th></tr>
+            </thead>
+            <tbody>
+                <tr><td style="color:var(--red)">a</td><td>Amplitude</td><td>1 to 10</td><td>Positive integer</td></tr>
+                <tr><td style="color:var(--orange)">b</td><td>Frequency (period P = 2π/b)</td><td>1 to 4</td><td>Positive integer</td></tr>
+                <tr><td style="color:var(--green)">c</td><td>Phase shift</td><td>Depends on b (kept &lt; half-period)</td><td>Integer</td></tr>
+                <tr><td style="color:var(--purple)">d</td><td>Vertical shift</td><td>−5 to 5</td><td>Integer</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- PREREQUISITES -->
+    <section>
+        <h2>Prerequisites</h2>
+        <h3>Install .NET 10 Desktop Runtime</h3>
+        <p>This application requires the <strong>.NET 10 Desktop Runtime</strong> (or SDK) for Windows.</p>
+        <ol class="steps">
+            <li>Visit the official download page:<br>
+                <a class="download-btn" href="https://dotnet.microsoft.com/download/dotnet/10.0" target="_blank" rel="noopener">.NET 10 Download</a>
+            </li>
+            <li>Under <strong>.NET Desktop Runtime</strong>, download the <strong>Windows x64</strong> installer.</li>
+            <li>Run the installer and follow the prompts.</li>
+            <li>Verify the installation by opening PowerShell and running:
+                <pre><code>dotnet --version</code></pre>
+                You should see a version starting with <code>10.</code>
+            </li>
+        </ol>
+    </section>
+
+    <!-- INSTALLATION -->
+    <section>
+        <h2>Installation &amp; Running</h2>
+
+        <h3>Option A: Run the pre-built executable</h3>
+        <ol class="steps">
+            <li>Copy the entire contents of the <code>publish/</code> folder to any location on your computer
+                (e.g. <code>C:\Tools\SineParameterTrainer\</code>).</li>
+            <li>Double-click <strong>SineParameterTrainer.exe</strong> to launch the application.</li>
+        </ol>
+        <div class="note">
+            <strong>Note:</strong> All files in the <code>publish/</code> folder must stay together — the <code>.exe</code> needs the accompanying <code>.dll</code> files to run.
+        </div>
+
+        <h3>Option B: Build from source</h3>
+        <ol class="steps">
+            <li>Make sure you have the <a href="https://dotnet.microsoft.com/download/dotnet/10.0" target="_blank" rel="noopener">.NET 10 SDK</a> installed.</li>
+            <li>Clone or download this project folder.</li>
+            <li>Open a terminal in the project directory and run:
+                <pre><code>dotnet run</code></pre>
+            </li>
+            <li>To create a publishable build:
+                <pre><code>dotnet publish -c Release -r win-x64 --self-contained false -o publish</code></pre>
+            </li>
+        </ol>
+    </section>
+
+    <!-- HOW TO USE -->
+    <section>
+        <h2>How to Use</h2>
+
+        <h3>1. Read the Graph</h3>
+        <p>When the application starts (or after clicking <strong>New Problem</strong>), a sine curve is plotted. Determine the four parameters:</p>
+        <ul class="tip-list">
+            <li><strong style="color:var(--red)">a</strong> (amplitude) — half the distance between the maximum and minimum values.</li>
+            <li><strong style="color:var(--orange)">b</strong> (frequency) — measure the period P with the crosshairs, then <strong>b = 2π / P</strong>.</li>
+            <li><strong style="color:var(--green)">c</strong> (phase shift) — the t-value where the curve crosses its centre line going upward.</li>
+            <li><strong style="color:var(--purple)">d</strong> (vertical shift) — the centre line: (max + min) / 2.</li>
+        </ul>
+
+        <h3>2. Use the Measurement Crosshairs</h3>
+        <p>Drag the <strong style="color:var(--red)">red</strong> and <strong style="color:var(--green)">green</strong> dashed lines directly on the plot:</p>
+        <ul class="tip-list">
+            <li>Place the two <strong>vertical</strong> lines on consecutive peaks to measure the <strong>period</strong> (Δx).</li>
+            <li>Place the two <strong>horizontal</strong> lines on a peak and a trough to measure <strong>2·a</strong> (Δy).</li>
+            <li>Each crosshair displays its exact <strong>(x, y)</strong> coordinates in a label.</li>
+        </ul>
+
+        <h3>3. Enter Your Answer</h3>
+        <p>Type values for a, b, c, and d into the input fields. Accepted formats:</p>
+        <ul class="tip-list">
+            <li>Integers: <code>3</code></li>
+            <li>Decimals: <code>1.5</code></li>
+            <li>Fractions: <code>3/2</code></li>
+        </ul>
+        <p>Press <strong>Enter</strong> or click <strong>Check Answer</strong> to verify.</p>
+
+        <h3>4. Get Feedback</h3>
+        <ul class="tip-list">
+            <li><strong style="color:var(--green)">Correct</strong> — green confirmation, score increases.</li>
+            <li><strong style="color:var(--red)">Incorrect</strong> — the tool tells you which parameters to re-check.</li>
+            <li>Click <strong>Show Solution</strong> if you're stuck.</li>
+        </ul>
+
+        <h3>5. Increase Difficulty</h3>
+        <p>Uncheck <strong>Show formula</strong> to hide the formula and the <em>b = 2π/P</em> hint, forcing recall from memory.</p>
+    </section>
+
+    <!-- TECH STACK -->
+    <section>
+        <h2>Tech Stack</h2>
+        <div class="tech-badges">
+            <span class="badge">C# / .NET 10</span>
+            <span class="badge">WPF</span>
+            <span class="badge">ScottPlot 5</span>
+            <span class="badge">CommunityToolkit.Mvvm</span>
+            <span class="badge">Microsoft.Extensions.DependencyInjection</span>
+        </div>
+    </section>
+
+    <!-- PROJECT STRUCTURE -->
+    <section>
+        <h2>Project Structure</h2>
+        <pre><code>SineParameterTrainer/
+├── Models/
+│   └── SineParameters.cs            Parameter record
+├── Services/
+│   ├── ISineCurveService.cs          Service interface
+│   └── SineCurveService.cs           Random parameter generation
+├── ViewModels/
+│   └── MainViewModel.cs              Application logic &amp; state
+├── Converters/
+│   └── StringToBrushConverter.cs     Hex colour → WPF Brush
+├── MainWindow.xaml                   UI layout
+├── MainWindow.xaml.cs                Plot rendering &amp; crosshair dragging
+├── App.xaml / App.xaml.cs            DI container &amp; startup
+├── icon.png                          Application icon
+└── screenshot.png                    Screenshot for documentation</code></pre>
+    </section>
+
+</div>
+
+<footer>
+    Sine Parameter Trainer — free to use for educational purposes.
+</footer>
+
+</body>
+</html>

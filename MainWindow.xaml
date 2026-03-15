@@ -1,0 +1,226 @@
+<Window x:Class="SineParameterTrainer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ScottPlot="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF"
+        xmlns:converters="clr-namespace:SineParameterTrainer.Converters"
+        Title="Sine Parameter Trainer"
+        Icon="icon.png"
+        Width="1050" Height="780"
+        MinWidth="820" MinHeight="620"
+        WindowStartupLocation="CenterScreen"
+        Background="#F0F2F5">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+        <converters:StringToBrushConverter x:Key="StringToBrush"/>
+
+        <!-- Card style -->
+        <Style x:Key="CardBorder" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="10" ShadowDepth="2" Opacity="0.08" Color="Black"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Button base template with darkening overlay on hover -->
+        <Style x:Key="PrimaryButton" TargetType="Button">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="24,10"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                CornerRadius="8" Padding="{TemplateBinding Padding}">
+                            <Grid>
+                                <Rectangle x:Name="Overlay" Fill="Black" Opacity="0"
+                                           RadiusX="8" RadiusY="8"/>
+                                <ContentPresenter HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Overlay" Property="Opacity" Value="0.12"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Overlay" Property="Opacity" Value="0.22"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Bd" Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Input text box style -->
+        <Style x:Key="ParamInput" TargetType="TextBox">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Width" Value="80"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="Background" Value="#F8FAFC"/>
+            <Setter Property="BorderBrush" Value="#CBD5E1"/>
+            <Setter Property="BorderThickness" Value="0,0,0,2"/>
+            <Setter Property="CaretBrush" Value="#3B82F6"/>
+            <Style.Triggers>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="#3B82F6"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,14">
+            <TextBlock Text="Sine Parameter Trainer"
+                       FontSize="28" FontWeight="Bold" Foreground="#1E293B"/>
+            <TextBlock Text="Determine the parameters a, b, c, d from the graph"
+                       FontSize="13" Foreground="#64748B" Margin="0,4,0,0"/>
+        </StackPanel>
+
+        <!-- Plot Card -->
+        <Border Grid.Row="1" Style="{StaticResource CardBorder}" Margin="0,0,0,14">
+            <ScottPlot:WpfPlot x:Name="WpfPlot" Margin="6"/>
+        </Border>
+
+        <!-- Input Panel Card -->
+        <Border Grid.Row="2" Style="{StaticResource CardBorder}" Padding="24,18">
+            <StackPanel>
+
+                <!-- Formula toggle + colour-coded formula -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
+                            Margin="0,0,0,18">
+                    <CheckBox Content="Show formula" IsChecked="{Binding FormulaVisible}"
+                              VerticalAlignment="Center" Margin="0,0,16,0"
+                              FontSize="13" Foreground="#94A3B8" Cursor="Hand"/>
+                    <StackPanel Orientation="Horizontal"
+                               Visibility="{Binding FormulaVisible, Converter={StaticResource BoolToVis}}">
+                        <TextBlock FontSize="20" FontFamily="Cambria Math"
+                                   VerticalAlignment="Center">
+                            <Run Text="f(t) = " Foreground="#64748B"/>
+                            <Run Text="a" Foreground="#EF4444" FontWeight="Bold"/>
+                            <Run Text=" · sin( " Foreground="#64748B"/>
+                            <Run Text="b" Foreground="#F59E0B" FontWeight="Bold"/>
+                            <Run Text=" · ( t − " Foreground="#64748B"/>
+                            <Run Text="c" Foreground="#10B981" FontWeight="Bold"/>
+                            <Run Text=" ) ) + " Foreground="#64748B"/>
+                            <Run Text="d" Foreground="#8B5CF6" FontWeight="Bold"/>
+                        </TextBlock>
+                        <Border Background="#FFF7ED" CornerRadius="6" Padding="10,4"
+                                Margin="24,0,0,0" VerticalAlignment="Center">
+                            <TextBlock FontSize="16" FontFamily="Cambria Math">
+                                <Run Text="b" Foreground="#F59E0B" FontWeight="Bold"/>
+                                <Run Text=" = 2&#x03C0; / P" Foreground="#64748B"/>
+                            </TextBlock>
+                        </Border>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Parameter inputs -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
+                            Margin="0,0,0,18">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,28,0">
+                        <TextBlock Text="a =" FontSize="18" FontWeight="Bold"
+                                   VerticalAlignment="Center" Margin="0,0,8,0"
+                                   Foreground="#EF4444"/>
+                        <TextBox Style="{StaticResource ParamInput}"
+                                 Text="{Binding UserA, UpdateSourceTrigger=PropertyChanged}"
+                                 KeyDown="OnInputKeyDown"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,28,0">
+                        <TextBlock Text="b =" FontSize="18" FontWeight="Bold"
+                                   VerticalAlignment="Center" Margin="0,0,8,0"
+                                   Foreground="#F59E0B"/>
+                        <TextBox Style="{StaticResource ParamInput}"
+                                 Text="{Binding UserB, UpdateSourceTrigger=PropertyChanged}"
+                                 KeyDown="OnInputKeyDown"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,28,0">
+                        <TextBlock Text="c =" FontSize="18" FontWeight="Bold"
+                                   VerticalAlignment="Center" Margin="0,0,8,0"
+                                   Foreground="#10B981"/>
+                        <TextBox Style="{StaticResource ParamInput}"
+                                 Text="{Binding UserC, UpdateSourceTrigger=PropertyChanged}"
+                                 KeyDown="OnInputKeyDown"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="d =" FontSize="18" FontWeight="Bold"
+                                   VerticalAlignment="Center" Margin="0,0,8,0"
+                                   Foreground="#8B5CF6"/>
+                        <TextBox Style="{StaticResource ParamInput}"
+                                 Text="{Binding UserD, UpdateSourceTrigger=PropertyChanged}"
+                                 KeyDown="OnInputKeyDown"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Buttons -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
+                            Margin="0,0,0,14">
+                    <Button Content="Check Answer" Style="{StaticResource PrimaryButton}"
+                            Background="#3B82F6"
+                            Command="{Binding CheckAnswerCommand}" Margin="0,0,12,0"/>
+                    <Button Content="New Problem" Style="{StaticResource PrimaryButton}"
+                            Background="#10B981"
+                            Command="{Binding GenerateNewCommand}" Margin="0,0,12,0"/>
+                    <Button Content="Show Solution" Style="{StaticResource PrimaryButton}"
+                            Background="#F59E0B"
+                            Command="{Binding RevealSolutionCommand}"/>
+                </StackPanel>
+
+                <!-- Help-line distances -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
+                            Margin="0,0,0,10">
+                    <TextBlock Text="Measurement:" FontSize="14" Foreground="#94A3B8"
+                               VerticalAlignment="Center" Margin="0,0,12,0"/>
+                    <Border Background="#FEF2F2" CornerRadius="6" Padding="10,4" Margin="0,0,10,0">
+                        <TextBlock Text="{Binding DeltaX}" FontSize="14" FontWeight="SemiBold"
+                                   Foreground="#DC2626" FontFamily="Consolas"/>
+                    </Border>
+                    <Border Background="#F0FDF4" CornerRadius="6" Padding="10,4">
+                        <TextBlock Text="{Binding DeltaY}" FontSize="14" FontWeight="SemiBold"
+                                   Foreground="#16A34A" FontFamily="Consolas"/>
+                    </Border>
+                    <TextBlock Text="(drag the dashed lines on the plot)" FontSize="12"
+                               Foreground="#CBD5E1" VerticalAlignment="Center" Margin="12,0,0,0"/>
+                </StackPanel>
+
+                <!-- Feedback -->
+                <TextBlock Text="{Binding Feedback}" FontSize="16" FontWeight="SemiBold"
+                           HorizontalAlignment="Center" Margin="0,0,0,4"
+                           Foreground="{Binding FeedbackColor, Converter={StaticResource StringToBrush}}"/>
+
+                <!-- Solution reveal -->
+                <TextBlock Text="{Binding SolutionText}" FontSize="15" FontWeight="Medium"
+                           HorizontalAlignment="Center" Foreground="#6366F1"
+                           FontFamily="Consolas"
+                           Visibility="{Binding SolutionVisible, Converter={StaticResource BoolToVis}}"/>
+
+                <!-- Score -->
+                <TextBlock HorizontalAlignment="Center" Margin="0,8,0,0"
+                           FontSize="13" Foreground="#94A3B8">
+                    <Run Text="Score: "/>
+                    <Run Text="{Binding Score, Mode=OneWay}"/>
+                    <Run Text=" / "/>
+                    <Run Text="{Binding TotalAttempts, Mode=OneWay}"/>
+                </TextBlock>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>
