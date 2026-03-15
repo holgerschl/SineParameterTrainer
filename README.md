@@ -38,52 +38,17 @@ and challenges the student to determine the four parameters **a**, **b**, **c**,
 
 ---
 
-## Prerequisites
+## Download & Installation
 
-### Install .NET 10 Runtime
+The application is a self-contained Windows executable — **no additional software or runtime installation is required**.
 
-This application requires the **.NET 10 Desktop Runtime** (or SDK) for Windows.
+1. Download the latest release from the [Releases page](https://github.com/holgerschl/SineParameterTrainer/releases/latest).
 
-1. Visit the official .NET download page:
-   **https://dotnet.microsoft.com/download/dotnet/10.0**
+2. Extract the downloaded `.zip` file to any folder on your computer (e.g. `C:\Tools\SineParameterTrainer\`).
 
-2. Under **.NET Desktop Runtime**, download the **Windows x64** installer.
+3. Double-click **`SineParameterTrainer.exe`** to start the application.
 
-3. Run the installer and follow the prompts.
-
-4. Verify the installation by opening a terminal (PowerShell or Command Prompt) and running:
-   ```
-   dotnet --version
-   ```
-   You should see a version starting with `10.`.
-
----
-
-## Installation & Running
-
-### Option A: Run the pre-built executable
-
-1. Copy the entire contents of the `publish/` folder to any location on your computer (e.g. `C:\Tools\SineParameterTrainer\`).
-
-2. Double-click **`SineParameterTrainer.exe`** to launch the application.
-
-> **Note:** All files in the `publish/` folder must stay together — the `.exe` needs the accompanying `.dll` files to run.
-
-### Option B: Build from source
-
-1. Make sure you have the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) installed.
-
-2. Clone or download this project folder.
-
-3. Open a terminal in the project directory and run:
-   ```
-   dotnet run
-   ```
-
-4. To create a publishable build:
-   ```
-   dotnet publish -c Release -r win-x64 --self-contained false -o publish
-   ```
+> **Note:** Keep all files from the zip together in the same folder — the `.exe` needs the accompanying files to run.
 
 ---
 

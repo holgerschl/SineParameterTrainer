@@ -376,49 +376,21 @@
         </table>
     </section>
 
-    <!-- PREREQUISITES -->
+    <!-- DOWNLOAD & INSTALLATION -->
     <section>
-        <h2>Prerequisites</h2>
-        <h3>Install .NET 10 Desktop Runtime</h3>
-        <p>This application requires the <strong>.NET 10 Desktop Runtime</strong> (or SDK) for Windows.</p>
+        <h2>Download &amp; Installation</h2>
+        <p>The application is a self-contained Windows executable — <strong>no additional software or runtime installation is required</strong>.</p>
         <ol class="steps">
-            <li>Visit the official download page:<br>
-                <a class="download-btn" href="https://dotnet.microsoft.com/download/dotnet/10.0" target="_blank" rel="noopener">.NET 10 Download</a>
+            <li>Download the latest release:<br>
+                <a class="download-btn" href="https://github.com/holgerschl/SineParameterTrainer/releases/latest" target="_blank" rel="noopener">Download (Windows x64)</a>
             </li>
-            <li>Under <strong>.NET Desktop Runtime</strong>, download the <strong>Windows x64</strong> installer.</li>
-            <li>Run the installer and follow the prompts.</li>
-            <li>Verify the installation by opening PowerShell and running:
-                <pre><code>dotnet --version</code></pre>
-                You should see a version starting with <code>10.</code>
-            </li>
-        </ol>
-    </section>
-
-    <!-- INSTALLATION -->
-    <section>
-        <h2>Installation &amp; Running</h2>
-
-        <h3>Option A: Run the pre-built executable</h3>
-        <ol class="steps">
-            <li>Copy the entire contents of the <code>publish/</code> folder to any location on your computer
+            <li>Extract the downloaded <code>.zip</code> file to any folder on your computer
                 (e.g. <code>C:\Tools\SineParameterTrainer\</code>).</li>
-            <li>Double-click <strong>SineParameterTrainer.exe</strong> to launch the application.</li>
+            <li>Double-click <strong>SineParameterTrainer.exe</strong> to start the application.</li>
         </ol>
         <div class="note">
-            <strong>Note:</strong> All files in the <code>publish/</code> folder must stay together — the <code>.exe</code> needs the accompanying <code>.dll</code> files to run.
+            <strong>Note:</strong> Keep all files from the zip together in the same folder — the <code>.exe</code> needs the accompanying files to run.
         </div>
-
-        <h3>Option B: Build from source</h3>
-        <ol class="steps">
-            <li>Make sure you have the <a href="https://dotnet.microsoft.com/download/dotnet/10.0" target="_blank" rel="noopener">.NET 10 SDK</a> installed.</li>
-            <li>Clone or download this project folder.</li>
-            <li>Open a terminal in the project directory and run:
-                <pre><code>dotnet run</code></pre>
-            </li>
-            <li>To create a publishable build:
-                <pre><code>dotnet publish -c Release -r win-x64 --self-contained false -o publish</code></pre>
-            </li>
-        </ol>
     </section>
 
     <!-- HOW TO USE -->
