@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sine Parameter Trainer</title>
+    <style>
+        :root {
+            --blue: #3B82F6;
+            --green: #10B981;
+            --red: #EF4444;
+            --orange: #F59E0B;
+            --purple: #8B5CF6;
+            --gray-50: #F9FAFB;
+            --gray-100: #F3F4F6;
+            --gray-200: #E5E7EB;
+            --gray-500: #6B7280;
+            --gray-700: #374151;
+            --gray-900: #111827;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #F0F2F5;
+            color: var(--gray-700);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1E3A8A 0%, var(--blue) 100%);
+            color: white;
+            padding: 1.25rem 2rem;
+            text-align: center;
+        }
+
+        .header h1 { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em; }
+        .header p { font-size: 0.95rem; opacity: 0.85; margin-top: 0.2rem; }
+
+        .main { max-width: 1100px; margin: 1rem auto; padding: 0 1rem; }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .plot-container { position: relative; }
+
+        canvas {
+            display: block;
+            width: 100%;
+            border-radius: 8px;
+            cursor: crosshair;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .formula-section {
+            flex: 1 1 100%;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .formula-section label {
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            user-select: none;
+        }
+
+        .formula-section input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--blue);
+        }
+
+        .formula-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+        }
+
+        .formula-hint {
+            background: var(--gray-100);
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            padding: 0.3rem 0.8rem;
+            font-size: 1.1rem;
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+            font-weight: 600;
+            color: var(--orange);
+        }
+
+        .param-a { color: var(--red); }
+        .param-b { color: var(--orange); }
+        .param-c { color: var(--green); }
+        .param-d { color: var(--purple); }
+
+        .inputs-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .input-group span {
+            font-weight: 700;
+            font-size: 1.1rem;
+            width: 1.2rem;
+            text-align: right;
+        }
+
+        .input-group input {
+            width: 70px;
+            padding: 0.4rem 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            text-align: center;
+            border: none;
+            border-bottom: 2px solid var(--gray-200);
+            outline: none;
+            background: transparent;
+            transition: border-color 0.2s;
+        }
+
+        .input-group input:focus { border-bottom-color: var(--blue); }
+
+        .buttons-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1.25rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: white;
+            transition: opacity 0.2s;
+        }
+
+        .btn:hover { opacity: 0.85; }
+        .btn-blue { background: var(--blue); }
+        .btn-green { background: var(--green); }
+        .btn-orange { background: var(--orange); }
+
+        .measurement-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        .measurement-row strong { color: var(--gray-700); }
+
+        .badge {
+            display: inline-block;
+            padding: 0.2rem 0.7rem;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: white;
+        }
+
+        .badge-red { background: var(--red); }
+        .badge-green { background: var(--green); }
+
+        .hint-text {
+            font-size: 0.8rem;
+            color: var(--gray-500);
+            font-style: italic;
+        }
+
+        .feedback {
+            text-align: center;
+            font-size: 1.05rem;
+            font-weight: 600;
+            min-height: 1.6rem;
+            padding: 0.25rem 0;
+        }
+
+        .solution {
+            text-align: center;
+            font-family: 'Consolas', 'Cascadia Code', monospace;
+            font-size: 1rem;
+            color: var(--purple);
+            min-height: 1.4rem;
+        }
+
+        .score {
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--gray-700);
+        }
+
+        .back-link {
+            display: inline-block;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+        }
+
+        .back-link:hover { color: white; }
+
+        @media (max-width: 640px) {
+            .header h1 { font-size: 1.3rem; }
+            .formula-text { font-size: 1.1rem; }
+            .inputs-row { gap: 0.5rem; }
+            .input-group input { width: 55px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>Sine Parameter Trainer</h1>
+    <p>Determine the parameters a, b, c, d from the graph</p>
+    <a class="back-link" href="index.html">&larr; Back to project page</a>
+</div>
+
+<div class="main">
+    <div class="card plot-container">
+        <canvas id="plotCanvas" width="1060" height="500"></canvas>
+    </div>
+
+    <div class="card controls">
+        <div class="formula-section" id="formulaSection">
+            <label><input type="checkbox" id="showFormula" checked> Show formula</label>
+            <span class="formula-text" id="formulaText">
+                f(t) = <span class="param-a">a</span> &middot; sin( <span class="param-b">b</span> &middot; ( t &minus; <span class="param-c">c</span> ) ) + <span class="param-d">d</span>
+            </span>
+            <span class="formula-hint" id="formulaHint">b = 2&pi; / P</span>
+        </div>
+
+        <div class="inputs-row">
+            <div class="input-group">
+                <span class="param-a">a =</span>
+                <input type="text" id="inputA" autocomplete="off">
+            </div>
+            <div class="input-group">
+                <span class="param-b">b =</span>
+                <input type="text" id="inputB" autocomplete="off">
+            </div>
+            <div class="input-group">
+                <span class="param-c">c =</span>
+                <input type="text" id="inputC" autocomplete="off">
+            </div>
+            <div class="input-group">
+                <span class="param-d">d =</span>
+                <input type="text" id="inputD" autocomplete="off">
+            </div>
+        </div>
+
+        <div class="buttons-row">
+            <button class="btn btn-blue" id="btnCheck">Check Answer</button>
+            <button class="btn btn-green" id="btnNew">New Problem</button>
+            <button class="btn btn-orange" id="btnSolution">Show Solution</button>
+        </div>
+
+        <div class="measurement-row">
+            <strong>Measurement:</strong>
+            <span class="badge badge-red" id="deltaX">&Delta;x = 0.00</span>
+            <span class="badge badge-green" id="deltaY">&Delta;y = 0.00</span>
+            <span class="hint-text">(drag the dashed lines on the plot)</span>
+        </div>
+
+        <div class="feedback" id="feedback"></div>
+        <div class="solution" id="solutionText"></div>
+        <div class="score" id="score">Score: 0 / 0</div>
+    </div>
+</div>
+
+<script>
+(function() {
+    "use strict";
+
+    const canvas = document.getElementById("plotCanvas");
+    const ctx = canvas.getContext("2d");
+
+    let params = { a: 1, b: 1, c: 0, d: 0 };
+    let score = 0, totalAttempts = 0;
+
+    const PLOT_PADDING = { top: 20, right: 30, bottom: 50, left: 60 };
+    let xMin, xMax, yMin, yMax;
+
+    let crosshairs = {
+        red:   { x: 0, y: 0 },
+        green: { x: 0, y: 0 }
+    };
+
+    let dragging = null; // { color: 'red'|'green', axis: 'x'|'y' }
+
+    // --- Parameter generation ---
+    function randInt(min, max) {
+        return Math.floor(Math.random() * (max - min)) + min;
+    }
+
+    function generateParams() {
+        const a = randInt(1, 11);
+        const b = randInt(1, 5);
+        const maxC = Math.floor(Math.PI / b);
+        const c = maxC > 0 ? randInt(-maxC, maxC + 1) : 0;
+        const d = randInt(-5, 6);
+        return { a, b, c, d };
+    }
+
+    function sineFunc(t, p) {
+        return p.a * Math.sin(p.b * (t - p.c)) + p.d;
+    }
+
+    // --- Coordinate transforms ---
+    function plotW() { return canvas.width - PLOT_PADDING.left - PLOT_PADDING.right; }
+    function plotH() { return canvas.height - PLOT_PADDING.top - PLOT_PADDING.bottom; }
+
+    function dataToCanvas(dx, dy) {
+        const cx = PLOT_PADDING.left + (dx - xMin) / (xMax - xMin) * plotW();
+        const cy = PLOT_PADDING.top + (yMax - dy) / (yMax - yMin) * plotH();
+        return { x: cx, y: cy };
+    }
+
+    function canvasToData(cx, cy) {
+        const dx = xMin + (cx - PLOT_PADDING.left) / plotW() * (xMax - xMin);
+        const dy = yMax - (cy - PLOT_PADDING.top) / plotH() * (yMax - yMin);
+        return { x: dx, y: dy };
+    }
+
+    // --- Nice tick computation ---
+    function niceStep(range, maxTicks) {
+        const rough = range / maxTicks;
+        const mag = Math.pow(10, Math.floor(Math.log10(rough)));
+        const residual = rough / mag;
+        let nice;
+        if (residual <= 1.5) nice = 1;
+        else if (residual <= 3) nice = 2;
+        else if (residual <= 7) nice = 5;
+        else nice = 10;
+        return nice * mag;
+    }
+
+    // --- Drawing ---
+    function drawPlot() {
+        const dpr = window.devicePixelRatio || 1;
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        const w = rect.width;
+        const h = rect.height;
+
+        // Redefine padding-based helpers using CSS pixels
+        const pL = PLOT_PADDING.left, pR = PLOT_PADDING.right;
+        const pT = PLOT_PADDING.top, pB = PLOT_PADDING.bottom;
+        const pw = w - pL - pR;
+        const ph = h - pT - pB;
+
+        function d2c(dx, dy) {
+            return {
+                x: pL + (dx - xMin) / (xMax - xMin) * pw,
+                y: pT + (yMax - dy) / (yMax - yMin) * ph
+            };
+        }
+
+        function c2d(cx, cy) {
+            return {
+                x: xMin + (cx - pL) / pw * (xMax - xMin),
+                y: yMax - (cy - pT) / ph * (yMax - yMin)
+            };
+        }
+
+        ctx.clearRect(0, 0, w, h);
+
+        // Background
+        ctx.fillStyle = "#FAFBFC";
+        ctx.fillRect(pL, pT, pw, ph);
+
+        // Grid & ticks
+        const xStep = niceStep(xMax - xMin, 10);
+        const yStep = niceStep(yMax - yMin, 8);
+
+        ctx.font = "13px 'Segoe UI', system-ui, sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "top";
+
+        // Vertical grid + X ticks
+        let xTick = Math.ceil(xMin / xStep) * xStep;
+        while (xTick <= xMax) {
+            const cx = d2c(xTick, 0).x;
+            ctx.strokeStyle = "#E5E7EB";
+            ctx.lineWidth = 1;
+            ctx.setLineDash([]);
+            ctx.beginPath(); ctx.moveTo(cx, pT); ctx.lineTo(cx, pT + ph); ctx.stroke();
+            ctx.fillStyle = "#6B7280";
+            ctx.fillText(fmtTick(xTick), cx, pT + ph + 6);
+            xTick += xStep;
+        }
+
+        // Horizontal grid + Y ticks
+        ctx.textAlign = "right";
+        ctx.textBaseline = "middle";
+        let yTick = Math.ceil(yMin / yStep) * yStep;
+        while (yTick <= yMax) {
+            const cy = d2c(0, yTick).y;
+            ctx.strokeStyle = "#E5E7EB";
+            ctx.lineWidth = 1;
+            ctx.setLineDash([]);
+            ctx.beginPath(); ctx.moveTo(pL, cy); ctx.lineTo(pL + pw, cy); ctx.stroke();
+            ctx.fillStyle = "#6B7280";
+            ctx.fillText(fmtTick(yTick), pL - 8, cy);
+            yTick += yStep;
+        }
+
+        // Axis zero lines
+        ctx.strokeStyle = "rgba(0,0,0,0.3)";
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([]);
+        if (xMin <= 0 && xMax >= 0) {
+            const cx = d2c(0, 0).x;
+            ctx.beginPath(); ctx.moveTo(cx, pT); ctx.lineTo(cx, pT + ph); ctx.stroke();
+        }
+        if (yMin <= 0 && yMax >= 0) {
+            const cy = d2c(0, 0).y;
+            ctx.beginPath(); ctx.moveTo(pL, cy); ctx.lineTo(pL + pw, cy); ctx.stroke();
+        }
+
+        // Axis labels
+        ctx.fillStyle = "#374151";
+        ctx.font = "bold 14px 'Segoe UI', system-ui, sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "top";
+        ctx.fillText("t", pL + pw / 2, pT + ph + 30);
+        ctx.save();
+        ctx.translate(16, pT + ph / 2);
+        ctx.rotate(-Math.PI / 2);
+        ctx.textBaseline = "middle";
+        ctx.fillText("f(t)", 0, 0);
+        ctx.restore();
+
+        // Sine curve
+        ctx.strokeStyle = var_blue;
+        ctx.lineWidth = 3;
+        ctx.setLineDash([]);
+        ctx.beginPath();
+        const n = 1000;
+        for (let i = 0; i <= n; i++) {
+            const t = xMin + (xMax - xMin) * i / n;
+            const y = sineFunc(t, params);
+            const p = d2c(t, y);
+            if (i === 0) ctx.moveTo(p.x, p.y);
+            else ctx.lineTo(p.x, p.y);
+        }
+        ctx.stroke();
+
+        // Clip region for crosshairs
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(pL, pT, pw, ph);
+        ctx.clip();
+
+        // Draw crosshairs
+        drawCrosshair(d2c, c2d, crosshairs.red, "#EF4444", pw, ph, pL, pT);
+        drawCrosshair(d2c, c2d, crosshairs.green, "#10B981", pw, ph, pL, pT);
+
+        ctx.restore();
+
+        // Update measurements
+        updateMeasurements();
+    }
+
+    const var_blue = "#3B82F6";
+
+    function drawCrosshair(d2c, c2d, ch, color, pw, ph, pL, pT) {
+        const cp = d2c(ch.x, ch.y);
+
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([6, 4]);
+
+        // Vertical line
+        ctx.beginPath();
+        ctx.moveTo(cp.x, pT);
+        ctx.lineTo(cp.x, pT + ph);
+        ctx.stroke();
+
+        // Horizontal line
+        ctx.beginPath();
+        ctx.moveTo(pL, cp.y);
+        ctx.lineTo(pL + pw, cp.y);
+        ctx.stroke();
+
+        ctx.setLineDash([]);
+
+        // Intersection dot
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(cp.x, cp.y, 4, 0, 2 * Math.PI);
+        ctx.fill();
+
+        // Coordinate label
+        const label = `(${ch.x.toFixed(2)}, ${ch.y.toFixed(2)})`;
+        ctx.font = "bold 13px 'Segoe UI', system-ui, sans-serif";
+        const tm = ctx.measureText(label);
+        const lw = tm.width + 10;
+        const lh = 22;
+
+        let lx = cp.x + 10;
+        let ly = cp.y - lh - 6;
+        if (lx + lw > pL + pw) lx = cp.x - lw - 10;
+        if (ly < pT) ly = cp.y + 10;
+
+        ctx.fillStyle = "rgba(255,255,255,0.92)";
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1.5;
+        roundRect(ctx, lx, ly, lw, lh, 4);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = color;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(label, lx + lw / 2, ly + lh / 2);
+    }
+
+    function roundRect(ctx, x, y, w, h, r) {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.lineTo(x + w - r, y);
+        ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+        ctx.lineTo(x + w, y + h - r);
+        ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+        ctx.lineTo(x + r, y + h);
+        ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+        ctx.lineTo(x, y + r);
+        ctx.quadraticCurveTo(x, y, x + r, y);
+        ctx.closePath();
+    }
+
+    function fmtTick(v) {
+        if (Math.abs(v) < 1e-10) return "0";
+        if (Math.abs(v - Math.round(v)) < 1e-10) return Math.round(v).toString();
+        return v.toFixed(1);
+    }
+
+    function updateMeasurements() {
+        const dx = Math.abs(crosshairs.green.x - crosshairs.red.x);
+        const dy = Math.abs(crosshairs.green.y - crosshairs.red.y);
+        document.getElementById("deltaX").textContent = `\u0394x = ${dx.toFixed(2)}`;
+        document.getElementById("deltaY").textContent = `\u0394y = ${dy.toFixed(2)}`;
+    }
+
+    // --- Mouse interaction for crosshairs ---
+    function getMouseData(e) {
+        const rect = canvas.getBoundingClientRect();
+        const cx = e.clientX - rect.left;
+        const cy = e.clientY - rect.top;
+
+        const pL = PLOT_PADDING.left, pR = PLOT_PADDING.right;
+        const pT = PLOT_PADDING.top, pB = PLOT_PADDING.bottom;
+        const pw = rect.width - pL - pR;
+        const ph = rect.height - pT - pB;
+
+        const dx = xMin + (cx - pL) / pw * (xMax - xMin);
+        const dy = yMax - (cy - pT) / ph * (yMax - yMin);
+
+        return { cx, cy, dx, dy, pw, ph, pL, pT, rectW: rect.width, rectH: rect.height };
+    }
+
+    function hitTest(e) {
+        const m = getMouseData(e);
+        const threshold = 15;
+        const pL = m.pL, pT = m.pT;
+
+        for (const color of ["red", "green"]) {
+            const ch = crosshairs[color];
+            const cp = {
+                x: pL + (ch.x - xMin) / (xMax - xMin) * m.pw,
+                y: pT + (yMax - ch.y) / (yMax - yMin) * m.ph
+            };
+
+            if (Math.abs(m.cx - cp.x) < threshold) return { color, axis: "x" };
+            if (Math.abs(m.cy - cp.y) < threshold) return { color, axis: "y" };
+        }
+        return null;
+    }
+
+    canvas.addEventListener("mousedown", function(e) {
+        const hit = hitTest(e);
+        if (hit) {
+            dragging = hit;
+            canvas.style.cursor = hit.axis === "x" ? "ew-resize" : "ns-resize";
+            e.preventDefault();
+        }
+    });
+
+    canvas.addEventListener("mousemove", function(e) {
+        if (dragging) {
+            const m = getMouseData(e);
+            if (dragging.axis === "x") {
+                crosshairs[dragging.color].x = Math.max(xMin, Math.min(xMax, m.dx));
+            } else {
+                crosshairs[dragging.color].y = Math.max(yMin, Math.min(yMax, m.dy));
+            }
+            drawPlot();
+            e.preventDefault();
+        } else {
+            const hit = hitTest(e);
+            if (hit) {
+                canvas.style.cursor = hit.axis === "x" ? "ew-resize" : "ns-resize";
+            } else {
+                canvas.style.cursor = "crosshair";
+            }
+        }
+    });
+
+    canvas.addEventListener("mouseup", function() {
+        dragging = null;
+        canvas.style.cursor = "crosshair";
+    });
+
+    canvas.addEventListener("mouseleave", function() {
+        dragging = null;
+        canvas.style.cursor = "crosshair";
+    });
+
+    // Touch support
+    canvas.addEventListener("touchstart", function(e) {
+        const touch = e.touches[0];
+        const mouseEvent = new MouseEvent("mousedown", { clientX: touch.clientX, clientY: touch.clientY });
+        canvas.dispatchEvent(mouseEvent);
+        if (dragging) e.preventDefault();
+    }, { passive: false });
+
+    canvas.addEventListener("touchmove", function(e) {
+        if (!dragging) return;
+        const touch = e.touches[0];
+        const mouseEvent = new MouseEvent("mousemove", { clientX: touch.clientX, clientY: touch.clientY });
+        canvas.dispatchEvent(mouseEvent);
+        e.preventDefault();
+    }, { passive: false });
+
+    canvas.addEventListener("touchend", function() {
+        dragging = null;
+        canvas.style.cursor = "crosshair";
+    });
+
+    // --- Input parsing ---
+    function tryParse(str) {
+        if (!str) return null;
+        str = str.trim().replace(",", ".");
+        if (str.includes("/")) {
+            const parts = str.split("/");
+            if (parts.length !== 2) return null;
+            const num = parseFloat(parts[0]);
+            const den = parseFloat(parts[1]);
+            if (isNaN(num) || isNaN(den) || Math.abs(den) < 0.0001) return null;
+            return num / den;
+        }
+        const val = parseFloat(str);
+        return isNaN(val) ? null : val;
+    }
+
+    // --- Answer checking ---
+    function functionsMatch(userParams) {
+        for (let i = 0; i < 200; i++) {
+            const t = -10 + i * 0.1;
+            const y1 = sineFunc(t, userParams);
+            const y2 = sineFunc(t, params);
+            if (Math.abs(y1 - y2) > 0.05) return false;
+        }
+        return true;
+    }
+
+    function formatParam(v) {
+        if (Math.abs(v - Math.round(v)) < 0.001) return Math.round(v).toString();
+        return v.toFixed(2);
+    }
+
+    function checkAnswer() {
+        const a = tryParse(document.getElementById("inputA").value);
+        const b = tryParse(document.getElementById("inputB").value);
+        const c = tryParse(document.getElementById("inputC").value);
+        const d = tryParse(document.getElementById("inputD").value);
+
+        const fb = document.getElementById("feedback");
+
+        if (a === null || b === null || c === null || d === null) {
+            fb.textContent = "Please enter valid values for all parameters. Fractions like 3/2 are accepted.";
+            fb.style.color = "#1E293B";
+            return;
+        }
+
+        totalAttempts++;
+        const userParams = { a, b, c, d };
+
+        if (functionsMatch(userParams)) {
+            score++;
+            fb.textContent = "Correct! Well done!";
+            fb.style.color = var_green;
+        } else {
+            const wrong = [];
+            if (Math.abs(a - params.a) > 0.05) wrong.push("a");
+            if (Math.abs(b - params.b) > 0.05) wrong.push("b");
+            if (Math.abs(c - params.c) > 0.05) wrong.push("c");
+            if (Math.abs(d - params.d) > 0.05) wrong.push("d");
+
+            if (wrong.length > 0) {
+                fb.textContent = `Not quite \u2014 check parameter${wrong.length > 1 ? "s" : ""}: ${wrong.join(", ")}`;
+            } else {
+                fb.textContent = "Close, but not matching. Try a different equivalent form.";
+            }
+            fb.style.color = var_red;
+        }
+
+        updateScore();
+    }
+
+    const var_green = "#10B981";
+    const var_red = "#EF4444";
+
+    function showSolution() {
+        const sol = document.getElementById("solutionText");
+        sol.textContent = `a = ${formatParam(params.a)},  b = ${formatParam(params.b)},  c = ${formatParam(params.c)},  d = ${formatParam(params.d)}`;
+    }
+
+    function updateScore() {
+        document.getElementById("score").textContent = `Score: ${score} / ${totalAttempts}`;
+    }
+
+    // --- New problem ---
+    function newProblem() {
+        params = generateParams();
+
+        const period = 2 * Math.PI / Math.abs(params.b);
+        xMin = Math.min(-1, params.c - period) - 0.5;
+        xMax = Math.max(1, params.c + 2.5 * period) + 0.5;
+        yMin = params.d - Math.abs(params.a) - 2;
+        yMax = params.d + Math.abs(params.a) + 2;
+
+        const xMid = (xMin + xMax) / 2;
+        crosshairs.red.x = xMid - period * 0.4;
+        crosshairs.red.y = params.d + Math.abs(params.a) * 0.5;
+        crosshairs.green.x = xMid + period * 0.4;
+        crosshairs.green.y = params.d - Math.abs(params.a) * 0.5;
+
+        document.getElementById("inputA").value = "";
+        document.getElementById("inputB").value = "";
+        document.getElementById("inputC").value = "";
+        document.getElementById("inputD").value = "";
+        document.getElementById("feedback").textContent = "";
+        document.getElementById("solutionText").textContent = "";
+
+        drawPlot();
+    }
+
+    // --- Formula toggle ---
+    document.getElementById("showFormula").addEventListener("change", function() {
+        const vis = this.checked ? "" : "none";
+        document.getElementById("formulaText").style.display = vis;
+        document.getElementById("formulaHint").style.display = vis;
+    });
+
+    // --- Button wiring ---
+    document.getElementById("btnCheck").addEventListener("click", checkAnswer);
+    document.getElementById("btnNew").addEventListener("click", newProblem);
+    document.getElementById("btnSolution").addEventListener("click", showSolution);
+
+    // Enter key triggers check
+    document.querySelectorAll(".input-group input").forEach(function(input) {
+        input.addEventListener("keydown", function(e) {
+            if (e.key === "Enter") checkAnswer();
+        });
+    });
+
+    // Responsive redraw
+    window.addEventListener("resize", drawPlot);
+
+    // --- Init ---
+    newProblem();
+})();
+</script>
+
+</body>
+</html>
