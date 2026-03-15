@@ -124,6 +124,18 @@ SineParameterTrainer/
 
 ---
 
+## Code Signing Policy
+
+Release builds are produced exclusively by [GitHub Actions](.github/workflows/release.yml) from the source code in this repository. The build pipeline is fully automated and reproducible.
+
+**Team roles:**
+- Approver & Committer: [holgerschl](https://github.com/holgerschl) (repository owner)
+
+**Privacy policy:**
+This program will not transfer any information to other networked systems unless specifically requested by the user or the person installing or operating it.
+
+---
+
 ## License
 
-This project is free to use for educational purposes.
+MIT License — see [LICENSE](LICENSE) for details.
