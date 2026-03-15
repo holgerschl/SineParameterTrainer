@@ -42,13 +42,13 @@ and challenges the student to determine the four parameters **a**, **b**, **c**,
 
 The application is a self-contained Windows executable — **no additional software or runtime installation is required**.
 
-1. Download the latest release from the [Releases page](https://github.com/holgerschl/SineParameterTrainer/releases/latest).
+1. Download **`SineParameterTrainer.exe`** from the [Releases page](https://github.com/holgerschl/SineParameterTrainer/releases/latest).
 
-2. Extract the downloaded `.zip` file to any folder on your computer (e.g. `C:\Tools\SineParameterTrainer\`).
+2. Save it to any location on your computer.
 
-3. Double-click **`SineParameterTrainer.exe`** to start the application.
+3. Double-click the file to start the application — that's it!
 
-> **Note:** Keep all files from the zip together in the same folder — the `.exe` needs the accompanying files to run.
+> **Note:** The download is a single ~70 MB file. Everything is bundled inside — no extraction or installation needed.
 
 ---
 
