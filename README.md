@@ -32,7 +32,7 @@ and challenges the student to determine the four parameters **a**, **b**, **c**,
 | Parameter | Role | Range | Type |
 |-----------|------|-------|------|
 | **a** | Amplitude | 1 to 10 | Positive integer |
-| **b** | Frequency (period P = 2π/b) | 1 to 4 | Positive integer |
+| **b** | Frequency (period P = 2π/b) | 0.25 to 4 (step 0.25) | Multiple of 0.25 |
 | **c** | Phase shift | Depends on b (kept < half-period) | Integer |
 | **d** | Vertical shift | −5 to 5 | Integer |
 

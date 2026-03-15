@@ -11,8 +11,8 @@ public class SineCurveService : ISineCurveService
         // a: positive integer amplitude from [1, 10]
         int a = _random.Next(1, 11);
 
-        // b: positive integer [1, 4] so period P = 2π/b is a clean fraction of π
-        int b = _random.Next(1, 5);
+        // b: 0.25 to 4 in steps of 0.25 (16 possible values)
+        double b = (_random.Next(1, 17)) * 0.25;
 
         // c: phase shift, integer with |c| < half-period (π/b)
         int maxC = (int)Math.Floor(Math.PI / b);
