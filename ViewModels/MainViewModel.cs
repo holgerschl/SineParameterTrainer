@@ -23,6 +23,7 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private string _deltaX = "";
     [ObservableProperty] private string _deltaY = "";
     [ObservableProperty] private bool _formulaVisible = true;
+    [ObservableProperty] private bool _isCheckEnabled = true;
 
     public SineParameters? CurrentParameters { get; private set; }
 
@@ -44,13 +45,14 @@ public partial class MainViewModel : ObservableObject
         Feedback = "";
         SolutionVisible = false;
         SolutionText = "";
+        IsCheckEnabled = true;
         OnNewProblem?.Invoke(CurrentParameters);
     }
 
     [RelayCommand]
     private void CheckAnswer()
     {
-        if (CurrentParameters is null) return;
+        if (CurrentParameters is null || !IsCheckEnabled) return;
 
         if (!TryParseInput(UserA, out double a) ||
             !TryParseInput(UserB, out double b) ||
@@ -64,12 +66,12 @@ public partial class MainViewModel : ObservableObject
 
         TotalAttempts++;
 
-        // Robust check: evaluate both functions at many points to handle equivalent representations
         if (FunctionsMatch(a, b, c, d, CurrentParameters))
         {
             Score++;
             Feedback = $"Correct! Well done!  ({Score} / {TotalAttempts})";
             FeedbackColor = "#10B981";
+            IsCheckEnabled = false;
             return;
         }
 

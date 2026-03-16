@@ -175,7 +175,8 @@
                             Margin="0,0,0,14">
                     <Button Content="Check Answer" Style="{StaticResource PrimaryButton}"
                             Background="#3B82F6"
-                            Command="{Binding CheckAnswerCommand}" Margin="0,0,12,0"/>
+                            Command="{Binding CheckAnswerCommand}"
+                            IsEnabled="{Binding IsCheckEnabled}" Margin="0,0,12,0"/>
                     <Button Content="New Problem" Style="{StaticResource PrimaryButton}"
                             Background="#10B981"
                             Command="{Binding GenerateNewCommand}" Margin="0,0,12,0"/>
