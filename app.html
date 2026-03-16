@@ -727,6 +727,7 @@
     }
 
     function checkAnswer() {
+        if (document.getElementById("btnCheck").disabled) return;
         const a = tryParse(document.getElementById("inputA").value);
         const b = tryParse(document.getElementById("inputB").value);
         const c = tryParse(document.getElementById("inputC").value);
@@ -747,6 +748,9 @@
             score++;
             fb.textContent = t("correct");
             fb.style.color = var_green;
+            document.getElementById("btnCheck").disabled = true;
+            document.getElementById("btnCheck").style.opacity = "0.4";
+            document.getElementById("btnCheck").style.cursor = "default";
         } else {
             const wrong = [];
             if (Math.abs(a - params.a) > 0.05) wrong.push("a");
@@ -799,6 +803,9 @@
         document.getElementById("inputD").value = "";
         document.getElementById("feedback").textContent = "";
         document.getElementById("solutionText").textContent = "";
+        document.getElementById("btnCheck").disabled = false;
+        document.getElementById("btnCheck").style.opacity = "";
+        document.getElementById("btnCheck").style.cursor = "";
 
         drawPlot();
     }
