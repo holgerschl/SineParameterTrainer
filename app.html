@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sine Parameter Trainer</title>
+    <title>Modellierung der allgemeinen Sinusfunktion | Sine Parameter Trainer</title>
     <style>
         :root {
             --blue: #3B82F6;
@@ -238,10 +238,15 @@
 </head>
 <body>
 
-<div class="header">
-    <h1>Sine Parameter Trainer</h1>
-    <p>Determine the parameters a, b, c, d from the graph</p>
-    <a class="back-link" href="index.html">&larr; Back to project page</a>
+<div class="header" style="position: relative;">
+    <div style="position: absolute; right: 1rem; top: 0.8rem; font-size: 0.9rem;">
+        <span id="langDe" style="cursor:pointer; font-weight:bold; color:white;">DE</span>
+        <span style="color:rgba(255,255,255,0.4);"> | </span>
+        <span id="langEn" style="cursor:pointer; color:rgba(255,255,255,0.5);">EN</span>
+    </div>
+    <h1 data-i18n="title">Modellierung der allgemeinen Sinusfunktion</h1>
+    <p data-i18n="subtitle">Bestimme die Parameter a, b, c, d aus dem Graphen</p>
+    <a class="back-link" href="index.html" data-i18n="backLink">&#8592; Zur&uuml;ck zur Projektwebsite</a>
 </div>
 
 <div class="main">
@@ -251,7 +256,7 @@
 
     <div class="card controls">
         <div class="formula-section" id="formulaSection">
-            <label><input type="checkbox" id="showFormula" checked> Show formula</label>
+            <label><input type="checkbox" id="showFormula" checked><span data-i18n="showFormulaLabel"> Formel anzeigen</span></label>
             <span class="formula-text" id="formulaText">
                 f(t) = <span class="param-a">a</span> &middot; sin( <span class="param-b">b</span> &middot; ( t &minus; <span class="param-c">c</span> ) ) + <span class="param-d">d</span>
             </span>
@@ -278,27 +283,47 @@
         </div>
 
         <div class="buttons-row">
-            <button class="btn btn-blue" id="btnCheck">Check Answer</button>
-            <button class="btn btn-green" id="btnNew">New Problem</button>
-            <button class="btn btn-orange" id="btnSolution">Show Solution</button>
+            <button class="btn btn-blue" id="btnCheck" data-i18n="checkBtn">Antwort pr&uuml;fen</button>
+            <button class="btn btn-green" id="btnNew" data-i18n="newBtn">Neue Aufgabe</button>
+            <button class="btn btn-orange" id="btnSolution" data-i18n="solutionBtn">L&ouml;sung anzeigen</button>
         </div>
 
         <div class="measurement-row">
-            <strong>Measurement:</strong>
+            <strong data-i18n="measurement">Messung:</strong>
             <span class="badge badge-red" id="deltaX">&Delta;x = 0.00</span>
             <span class="badge badge-green" id="deltaY">&Delta;y = 0.00</span>
-            <span class="hint-text">(drag the dashed lines on the plot)</span>
+            <span class="hint-text" data-i18n="dragHint">(gestrichelte Linien im Diagramm ziehen)</span>
         </div>
 
         <div class="feedback" id="feedback"></div>
         <div class="solution" id="solutionText"></div>
-        <div class="score" id="score">Score: 0 / 0</div>
+        <div class="score" id="score">Punkte: 0 / 0</div>
     </div>
 </div>
 
 <script>
 (function() {
     "use strict";
+
+    let lang = "de";
+    const i18n = {
+        title: { de: "Modellierung der allgemeinen Sinusfunktion", en: "Sine Parameter Trainer" },
+        subtitle: { de: "Bestimme die Parameter a, b, c, d aus dem Graphen", en: "Determine the parameters a, b, c, d from the graph" },
+        backLink: { de: "\u2190 Zur\u00FCck zur Projektwebsite", en: "\u2190 Back to project page" },
+        showFormulaLabel: { de: " Formel anzeigen", en: " Show formula" },
+        checkBtn: { de: "Antwort pr\u00FCfen", en: "Check Answer" },
+        newBtn: { de: "Neue Aufgabe", en: "New Problem" },
+        solutionBtn: { de: "L\u00F6sung anzeigen", en: "Show Solution" },
+        measurement: { de: "Messung:", en: "Measurement:" },
+        dragHint: { de: "(gestrichelte Linien im Diagramm ziehen)", en: "(drag the dashed lines on the plot)" },
+        scoreLabel: { de: "Punkte", en: "Score" },
+        enterValid: { de: "Bitte g\u00FCltige Werte f\u00FCr alle Parameter eingeben. Br\u00FCche wie 3/2 sind erlaubt.", en: "Please enter valid values for all parameters. Fractions like 3/2 are accepted." },
+        correct: { de: "Richtig! Gut gemacht!", en: "Correct! Well done!" },
+        checkParams: { de: "Nicht ganz richtig \u2014 \u00FCberpr\u00FCfe Parameter", en: "Not quite \u2014 check parameter" },
+        checkParamsPlural: { de: "Nicht ganz richtig \u2014 \u00FCberpr\u00FCfe Parameter", en: "Not quite \u2014 check parameters" },
+        closeTry: { de: "Knapp, aber nicht passend. Versuche eine andere \u00E4quivalente Form.", en: "Close, but not matching. Try a different equivalent form." }
+    };
+    function t(key) { return i18n[key][lang]; }
 
     const canvas = document.getElementById("plotCanvas");
     const ctx = canvas.getContext("2d");
@@ -710,7 +735,7 @@
         const fb = document.getElementById("feedback");
 
         if (a === null || b === null || c === null || d === null) {
-            fb.textContent = "Please enter valid values for all parameters. Fractions like 3/2 are accepted.";
+            fb.textContent = t("enterValid");
             fb.style.color = "#1E293B";
             return;
         }
@@ -720,7 +745,7 @@
 
         if (functionsMatch(userParams)) {
             score++;
-            fb.textContent = "Correct! Well done!";
+            fb.textContent = t("correct");
             fb.style.color = var_green;
         } else {
             const wrong = [];
@@ -730,9 +755,9 @@
             if (Math.abs(d - params.d) > 0.05) wrong.push("d");
 
             if (wrong.length > 0) {
-                fb.textContent = `Not quite \u2014 check parameter${wrong.length > 1 ? "s" : ""}: ${wrong.join(", ")}`;
+                fb.textContent = (wrong.length > 1 ? t("checkParamsPlural") : t("checkParams")) + ": " + wrong.join(", ");
             } else {
-                fb.textContent = "Close, but not matching. Try a different equivalent form.";
+                fb.textContent = t("closeTry");
             }
             fb.style.color = var_red;
         }
@@ -749,7 +774,7 @@
     }
 
     function updateScore() {
-        document.getElementById("score").textContent = `Score: ${score} / ${totalAttempts}`;
+        document.getElementById("score").textContent = t("scoreLabel") + ": " + score + " / " + totalAttempts;
     }
 
     // --- New problem ---
@@ -798,6 +823,22 @@
     });
 
     // Responsive redraw
+    function applyLanguage() {
+        document.documentElement.lang = lang;
+        document.querySelectorAll("[data-i18n]").forEach(function(el) {
+            var key = el.getAttribute("data-i18n");
+            if (i18n[key]) el.textContent = t(key);
+        });
+        document.getElementById("langDe").style.fontWeight = lang === "de" ? "bold" : "normal";
+        document.getElementById("langDe").style.color = lang === "de" ? "white" : "rgba(255,255,255,0.5)";
+        document.getElementById("langEn").style.fontWeight = lang === "en" ? "bold" : "normal";
+        document.getElementById("langEn").style.color = lang === "en" ? "white" : "rgba(255,255,255,0.5)";
+        document.getElementById("score").textContent = t("scoreLabel") + ": " + score + " / " + totalAttempts;
+    }
+
+    document.getElementById("langDe").addEventListener("click", function() { lang = "de"; applyLanguage(); });
+    document.getElementById("langEn").addEventListener("click", function() { lang = "en"; applyLanguage(); });
+
     window.addEventListener("resize", drawPlot);
 
     // --- Init ---

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sine Parameter Trainer</title>
+    <title>Modellierung der allgemeinen Sinusfunktion | Sine Parameter Trainer</title>
     <style>
         :root {
             --blue: #3B82F6;
@@ -33,6 +33,7 @@
             color: white;
             padding: 4rem 2rem 3rem;
             text-align: center;
+            position: relative;
         }
 
         .hero h1 {
@@ -64,6 +65,40 @@
         .hero .formula .param-b { color: #FDE68A; font-weight: 700; }
         .hero .formula .param-c { color: #6EE7B7; font-weight: 700; }
         .hero .formula .param-d { color: #C4B5FD; font-weight: 700; }
+
+        .lang-toggle {
+            position: absolute;
+            right: 1.5rem;
+            top: 1.5rem;
+            display: flex;
+            gap: 0.15rem;
+            background: rgba(255,255,255,0.15);
+            border-radius: 6px;
+            padding: 0.2rem;
+            backdrop-filter: blur(4px);
+        }
+
+        .lang-toggle button {
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 0.25rem 0.6rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .lang-toggle button.active {
+            color: white;
+            background: rgba(255,255,255,0.2);
+            font-weight: 800;
+        }
+
+        .lang-toggle button:hover:not(.active) {
+            color: rgba(255,255,255,0.85);
+        }
 
         .container {
             max-width: 900px;
@@ -309,14 +344,18 @@
 <body>
 
 <div class="hero">
-    <h1>Sine Parameter Trainer</h1>
-    <p>A learning tool for 10th-grade school (German: Gymnasium) students to practice reading the parameters of a general sine function from its graph.</p>
+    <div class="lang-toggle">
+        <button id="btn-de" class="active" onclick="setLang('de')">DE</button>
+        <button id="btn-en" onclick="setLang('en')">EN</button>
+    </div>
+    <h1 id="hero-title">Modellierung der allgemeinen Sinusfunktion</h1>
+    <p id="hero-desc">Ein Lerntool f&uuml;r Sch&uuml;lerinnen und Sch&uuml;ler der 10. Klasse (Gymnasium), um die Parameter einer allgemeinen Sinusfunktion aus dem Graphen abzulesen.</p>
     <div class="formula">
         f(t) = <span class="param-a">a</span> · sin( <span class="param-b">b</span> · ( t − <span class="param-c">c</span> ) ) + <span class="param-d">d</span>
     </div>
     <div style="margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-        <a class="download-btn" href="app.html" style="background: #10B981; font-size: 1.1rem; padding: 0.85rem 2.5rem;">&#9654; Try it in your Browser</a>
-        <a class="download-btn" href="https://holgerschl.github.io/PolynomialTrainer/" target="_blank" rel="noopener" style="background: #8B5CF6; font-size: 1.1rem; padding: 0.85rem 2.5rem;">&#9654; Try our Polynomial Trainer</a>
+        <a class="download-btn" id="hero-btn-try" href="app.html" style="background: #10B981; font-size: 1.1rem; padding: 0.85rem 2.5rem;">&#9654; Im Browser ausprobieren</a>
+        <a class="download-btn" id="hero-btn-poly" href="https://holgerschl.github.io/PolynomialTrainer/" target="_blank" rel="noopener" style="background: #8B5CF6; font-size: 1.1rem; padding: 0.85rem 2.5rem;">&#9654; Polynomfunktionen-Trainer</a>
     </div>
 </div>
 
@@ -325,6 +364,195 @@
 </div>
 
 <div class="container">
+
+    <!-- ===== GERMAN CONTENT ===== -->
+    <div id="content-de">
+
+    <!-- FEATURES -->
+    <section>
+        <h2>Funktionen</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <strong>Zuf&auml;llige Kurvenerzeugung</strong>
+                <p>Jeder Klick auf <em>Neue Aufgabe</em> erzeugt eine neue Sinuskurve mit zuf&auml;lligen Parametern.</p>
+            </div>
+            <div class="feature-card">
+                <strong>Farbcodierte Formel</strong>
+                <p>Die allgemeine Formel wird mit jedem Parameter in seiner eigenen Farbe angezeigt, passend zu den Eingabefeldern.</p>
+            </div>
+            <div class="feature-card">
+                <strong>Ausblendbare Formel</strong>
+                <p>Deaktiviere <em>Formel anzeigen</em> f&uuml;r eine zus&auml;tzliche Herausforderung.</p>
+            </div>
+            <div class="feature-card">
+                <strong>Hilfsformel</strong>
+                <p>Die Beziehung <strong>b = 2&pi; / P</strong> wird als Erinnerung neben der Hauptformel angezeigt.</p>
+            </div>
+            <div class="feature-card">
+                <strong>Verschiebbare Fadenkreuze</strong>
+                <p>Zwei gestrichelte Linien (rot &amp; gr&uuml;n) k&ouml;nnen auf dem Diagramm gezogen werden, um Abst&auml;nde zu messen, mit Live-(x, y)-Beschriftungen.</p>
+            </div>
+            <div class="feature-card">
+                <strong>Live &Delta;x / &Delta;y Anzeige</strong>
+                <p>Abst&auml;nde zwischen den beiden Fadenkreuzen werden in Echtzeit angezeigt &mdash; perfekt zum Messen von Periode oder Amplitude.</p>
+            </div>
+            <div class="feature-card">
+                <strong>Intelligente Antwortpr&uuml;fung</strong>
+                <p>Akzeptiert &auml;quivalente Darstellungen und sagt dir genau, welche Parameter falsch sind.</p>
+            </div>
+            <div class="feature-card">
+                <strong>Brucheingabe</strong>
+                <p>Antworten k&ouml;nnen als Dezimalzahlen (<code>1.5</code>) oder Br&uuml;che (<code>3/2</code>) eingegeben werden.</p>
+            </div>
+            <div class="feature-card">
+                <strong>Punkteverfolgung</strong>
+                <p>Z&auml;hlt richtige Antworten gegen Gesamtversuche w&auml;hrend der Sitzung.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- PARAMETER RANGES -->
+    <section>
+        <h2>Parameterbereiche</h2>
+        <table class="param-table">
+            <thead>
+                <tr><th>Parameter</th><th>Rolle</th><th>Bereich</th><th>Typ</th></tr>
+            </thead>
+            <tbody>
+                <tr><td style="color:var(--red)">a</td><td>Amplitude</td><td>1 bis 10</td><td>Positive ganze Zahl</td></tr>
+                <tr><td style="color:var(--orange)">b</td><td>Frequenz (Periode P = 2&pi;/b)</td><td>0,25 bis 4 (Schritt 0,25)</td><td>Vielfaches von 0,25</td></tr>
+                <tr><td style="color:var(--green)">c</td><td>Phasenverschiebung</td><td>Abh&auml;ngig von b (kleiner als halbe Periode)</td><td>Ganze Zahl</td></tr>
+                <tr><td style="color:var(--purple)">d</td><td>Vertikale Verschiebung</td><td>&minus;5 bis 5</td><td>Ganze Zahl</td></tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- DOWNLOAD & INSTALLATION -->
+    <section>
+        <h2>Download &amp; Installation</h2>
+        <p>Die Anwendung ist eine eigenst&auml;ndige Windows-Datei &mdash; <strong>keine zus&auml;tzliche Software oder Laufzeitinstallation erforderlich</strong>.</p>
+        <ol class="steps">
+            <li>Lade die neueste Version herunter:<br>
+                <a class="download-btn" href="https://github.com/holgerschl/SineParameterTrainer/releases/latest" target="_blank" rel="noopener">Download (Windows x64)</a>
+            </li>
+            <li>Speichere <strong>SineParameterTrainer.exe</strong> an einem beliebigen Ort auf deinem Computer.</li>
+            <li>Doppelklicke die Datei, um die Anwendung zu starten &mdash; das war's!</li>
+        </ol>
+        <div class="note">
+            <strong>Hinweis:</strong> Der Download ist eine einzelne ~70 MB Datei. Alles ist enthalten &mdash; kein Entpacken oder Installieren n&ouml;tig.
+        </div>
+        <p style="margin-top: 1rem; font-size: 1rem;">Oder &uuml;berspringe den Download und <a href="app.html" style="color: var(--blue); font-weight: 600;">probiere es direkt im Browser aus &rarr;</a></p>
+    </section>
+
+    <!-- HOW TO USE -->
+    <section>
+        <h2>Anleitung</h2>
+
+        <h3>1. Den Graphen ablesen</h3>
+        <p>Beim Start der Anwendung (oder nach Klick auf <strong>Neue Aufgabe</strong>) wird eine Sinuskurve gezeichnet. Bestimme die vier Parameter:</p>
+        <ul class="tip-list">
+            <li><strong style="color:var(--red)">a</strong> (Amplitude) &mdash; die H&auml;lfte des Abstands zwischen Maximum und Minimum.</li>
+            <li><strong style="color:var(--orange)">b</strong> (Frequenz) &mdash; miss die Periode P mit den Fadenkreuzen, dann <strong>b = 2&pi; / P</strong>.</li>
+            <li><strong style="color:var(--green)">c</strong> (Phasenverschiebung) &mdash; der t-Wert, an dem die Kurve die Mittellinie nach oben durchkreuzt.</li>
+            <li><strong style="color:var(--purple)">d</strong> (vertikale Verschiebung) &mdash; die Mittellinie: (Max + Min) / 2.</li>
+        </ul>
+
+        <h3>2. Die Mess-Fadenkreuze verwenden</h3>
+        <p>Ziehe die <strong style="color:var(--red)">roten</strong> und <strong style="color:var(--green)">gr&uuml;nen</strong> gestrichelten Linien direkt auf dem Diagramm:</p>
+        <ul class="tip-list">
+            <li>Platziere die beiden <strong>vertikalen</strong> Linien auf aufeinanderfolgenden Maxima, um die <strong>Periode</strong> (&Delta;x) zu messen.</li>
+            <li>Platziere die beiden <strong>horizontalen</strong> Linien auf einem Maximum und einem Minimum, um <strong>2&middot;a</strong> (&Delta;y) zu messen.</li>
+            <li>Jedes Fadenkreuz zeigt seine genauen <strong>(x, y)</strong>-Koordinaten an.</li>
+        </ul>
+
+        <h3>3. Antwort eingeben</h3>
+        <p>Gib die Werte f&uuml;r a, b, c und d in die Eingabefelder ein. Akzeptierte Formate:</p>
+        <ul class="tip-list">
+            <li>Ganze Zahlen: <code>3</code></li>
+            <li>Dezimalzahlen: <code>1.5</code></li>
+            <li>Br&uuml;che: <code>3/2</code></li>
+        </ul>
+        <p>Dr&uuml;cke <strong>Enter</strong> oder klicke auf <strong>Antwort pr&uuml;fen</strong> zur &Uuml;berpr&uuml;fung.</p>
+
+        <h3>4. R&uuml;ckmeldung erhalten</h3>
+        <ul class="tip-list">
+            <li><strong style="color:var(--green)">Richtig</strong> &mdash; gr&uuml;ne Best&auml;tigung, Punktzahl steigt.</li>
+            <li><strong style="color:var(--red)">Falsch</strong> &mdash; das Tool sagt dir, welche Parameter &uuml;berpr&uuml;ft werden m&uuml;ssen.</li>
+            <li>Klicke auf <strong>L&ouml;sung anzeigen</strong>, wenn du nicht weiterkommst.</li>
+        </ul>
+
+        <h3>5. Schwierigkeit erh&ouml;hen</h3>
+        <p>Deaktiviere <strong>Formel anzeigen</strong>, um die Formel und den Hinweis <em>b = 2&pi;/P</em> auszublenden und das Wissen aus dem Ged&auml;chtnis abzurufen.</p>
+    </section>
+
+    <!-- TECH STACK -->
+    <section>
+        <h2>Technologie</h2>
+        <div class="tech-badges">
+            <span class="badge">C# / .NET 10</span>
+            <span class="badge">WPF</span>
+            <span class="badge">ScottPlot 5</span>
+            <span class="badge">CommunityToolkit.Mvvm</span>
+            <span class="badge">Microsoft.Extensions.DependencyInjection</span>
+        </div>
+    </section>
+
+    <!-- PROJECT STRUCTURE -->
+    <section>
+        <h2>Projektstruktur</h2>
+        <pre><code>SineParameterTrainer/
+├── Models/
+│   └── SineParameters.cs            Parameter-Record
+├── Services/
+│   ├── ISineCurveService.cs          Service-Interface
+│   └── SineCurveService.cs           Zufällige Parametererzeugung
+├── ViewModels/
+│   └── MainViewModel.cs              Anwendungslogik &amp; Zustand
+├── Converters/
+│   └── StringToBrushConverter.cs     Hex-Farbe → WPF-Brush
+├── MainWindow.xaml                   UI-Layout
+├── MainWindow.xaml.cs                Plot-Rendering &amp; Fadenkreuz-Steuerung
+├── App.xaml / App.xaml.cs            DI-Container &amp; Start
+├── icon.png                          Anwendungssymbol
+└── screenshot.png                    Screenshot für Dokumentation</code></pre>
+    </section>
+
+    <!-- CODE SIGNING POLICY -->
+    <section>
+        <h2>Code-Signierung</h2>
+        <p>Release-Builds werden ausschlie&szlig;lich von <a href="https://github.com/holgerschl/SineParameterTrainer/blob/main/.github/workflows/release.yml" target="_blank" rel="noopener">GitHub Actions</a> aus dem Quellcode dieses Repositories erzeugt. Die Build-Pipeline ist vollst&auml;ndig automatisiert und reproduzierbar.</p>
+        <p><strong>Teamrollen:</strong></p>
+        <ul class="tip-list">
+            <li><strong>Genehmiger &amp; Committer:</strong> <a href="https://github.com/holgerschl" target="_blank" rel="noopener">holgerschl</a> (Repository-Eigent&uuml;mer)</li>
+        </ul>
+        <p><strong>Datenschutz:</strong> Dieses Programm &uuml;bertr&auml;gt keine Informationen an andere vernetzte Systeme, es sei denn, der Benutzer oder die Person, die es installiert oder betreibt, fordert dies ausdr&uuml;cklich an.</p>
+        <p><strong>Lizenz:</strong> <a href="https://github.com/holgerschl/SineParameterTrainer/blob/main/LICENSE" target="_blank" rel="noopener">MIT-Lizenz</a> &mdash; frei nutzbar, modifizierbar und verteilbar.</p>
+    </section>
+
+    <!-- GITHUB SIGNUP -->
+    <section>
+        <h2>GitHub-Konto erstellen</h2>
+        <p>Um unten einen Kommentar zu hinterlassen, ben&ouml;tigst du ein (kostenloses) GitHub-Konto. Falls du noch keins hast, dauert die Registrierung nur eine Minute:</p>
+        <ol class="steps">
+            <li>Gehe zur GitHub-Registrierungsseite:<br>
+                <a class="download-btn" href="https://github.com/signup" target="_blank" rel="noopener">Bei GitHub registrieren</a>
+            </li>
+            <li>Gib deine <strong>E-Mail-Adresse</strong> ein, w&auml;hle ein <strong>Passwort</strong> und einen <strong>Benutzernamen</strong>.</li>
+            <li>L&ouml;se das kurze Verifizierungsr&auml;tsel und best&auml;tige deine E-Mail.</li>
+        </ol>
+        <p>Das war's &mdash; du kannst dich jetzt anmelden, um Kommentare und Feedback zu hinterlassen.</p>
+    </section>
+
+    <!-- COMMENTS -->
+    <section>
+        <h2>Kommentare &amp; Feedback</h2>
+        <p>Hast du eine Frage, einen Vorschlag oder einen Fehler gefunden? Hinterlasse unten einen Kommentar &mdash; melde dich mit deinem GitHub-Konto an, um zu schreiben.</p>
+    </section>
+
+    </div><!-- /content-de -->
+
+    <!-- ===== ENGLISH CONTENT ===== -->
+    <div id="content-en" style="display:none;">
 
     <!-- FEATURES -->
     <section>
@@ -505,6 +733,12 @@
     <section>
         <h2>Comments &amp; Feedback</h2>
         <p>Have a question, suggestion, or found a bug? Leave a comment below — sign in with your GitHub account to post.</p>
+    </section>
+
+    </div><!-- /content-en -->
+
+    <!-- GISCUS (shared, outside both language divs) -->
+    <section>
         <div class="giscus-wrapper">
             <script src="https://giscus.app/client.js"
                     data-repo="holgerschl/SineParameterTrainer"
@@ -527,10 +761,39 @@
 
 </div>
 
-<footer>
-    Sine Parameter Trainer — MIT License — free to use, modify, and distribute.<br>
-    Also check out the <a href="https://holgerschl.github.io/PolynomialTrainer/" target="_blank" rel="noopener" style="color: var(--blue); font-weight: 600;">Polynomial Trainer</a> for practicing polynomial analysis.
+<footer id="site-footer">
+    Modellierung der allgemeinen Sinusfunktion &mdash; MIT-Lizenz &mdash; frei nutzbar, modifizierbar und verteilbar.<br>
+    Schau dir auch den <a href="https://holgerschl.github.io/PolynomialTrainer/" target="_blank" rel="noopener" style="color: var(--blue); font-weight: 600;">Polynomfunktionen-Trainer</a> an.
 </footer>
+
+<script>
+var lang = "de";
+
+function setLang(l) {
+    lang = l;
+    document.documentElement.lang = l;
+
+    document.getElementById("content-de").style.display = (l === "de") ? "" : "none";
+    document.getElementById("content-en").style.display = (l === "en") ? "" : "none";
+
+    document.getElementById("btn-de").className = (l === "de") ? "active" : "";
+    document.getElementById("btn-en").className = (l === "en") ? "active" : "";
+
+    if (l === "de") {
+        document.getElementById("hero-title").innerHTML = "Modellierung der allgemeinen Sinusfunktion";
+        document.getElementById("hero-desc").innerHTML = "Ein Lerntool f\u00fcr Sch\u00fclerinnen und Sch\u00fcler der 10.\u00a0Klasse (Gymnasium), um die Parameter einer allgemeinen Sinusfunktion aus dem Graphen abzulesen.";
+        document.getElementById("hero-btn-try").innerHTML = "\u25B6 Im Browser ausprobieren";
+        document.getElementById("hero-btn-poly").innerHTML = "\u25B6 Polynomfunktionen-Trainer";
+        document.getElementById("site-footer").innerHTML = 'Modellierung der allgemeinen Sinusfunktion \u2014 MIT-Lizenz \u2014 frei nutzbar, modifizierbar und verteilbar.<br>Schau dir auch den <a href="https://holgerschl.github.io/PolynomialTrainer/" target="_blank" rel="noopener" style="color: var(--blue); font-weight: 600;">Polynomfunktionen-Trainer</a> an.';
+    } else {
+        document.getElementById("hero-title").innerHTML = "Sine Parameter Trainer";
+        document.getElementById("hero-desc").innerHTML = "A learning tool for 10th-grade school (German: Gymnasium) students to practice reading the parameters of a general sine function from its graph.";
+        document.getElementById("hero-btn-try").innerHTML = "\u25B6 Try it in your Browser";
+        document.getElementById("hero-btn-poly").innerHTML = "\u25B6 Try our Polynomial Trainer";
+        document.getElementById("site-footer").innerHTML = 'Sine Parameter Trainer \u2014 MIT License \u2014 free to use, modify, and distribute.<br>Also check out the <a href="https://holgerschl.github.io/PolynomialTrainer/" target="_blank" rel="noopener" style="color: var(--blue); font-weight: 600;">Polynomial Trainer</a> for practicing polynomial analysis.';
+    }
+}
+</script>
 
 </body>
 </html>
