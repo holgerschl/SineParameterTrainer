@@ -1,6 +1,6 @@
-# Sine Parameter Trainer
+# Sine Parameter Trainer — Modellierung der allgemeinen Sinusfunktion
 
-A desktop learning tool that helps students practice reading the parameters of a general sine function from its graph.
+A learning tool for **10th-grade school (German: Gymnasium) students** that helps practice reading the parameters of a general sine function from its graph. Available as a **Windows desktop app** (WPF) and a **browser-based web app**.
 
 The program generates random sine curves of the form
 
@@ -8,12 +8,15 @@ The program generates random sine curves of the form
 
 and challenges the student to determine the four parameters **a**, **b**, **c**, and **d** by analysing the plotted curve.
 
+**[Try the web version](https://holgerschl.github.io/SineParameterTrainer/app.html)** | **[Project website](https://holgerschl.github.io/SineParameterTrainer/)** | **[Download desktop app](https://github.com/holgerschl/SineParameterTrainer/releases/latest)**
+
 ![Screenshot of Sine Parameter Trainer](screenshot.png)
 
 ---
 
 ## Features
 
+- **Bilingual (DE / EN)** — German is the default language; switch to English with one click (both desktop and web app)
 - **Random curve generation** — each click of *New Problem* produces a fresh sine curve with randomised parameters.
 - **Colour-coded formula** — the general formula is displayed with each parameter highlighted in its own colour, matching the input labels below.
 - **Hideable formula** — uncheck *Show formula* for an extra challenge once the student is confident.
@@ -23,7 +26,7 @@ and challenges the student to determine the four parameters **a**, **b**, **c**,
 - **Answer checking** — enter values for a, b, c, d and click *Check Answer*. The tool highlights which parameters are wrong. It also accepts mathematically equivalent representations (e.g. different phase shifts that produce the same curve).
 - **Fraction input** — answers can be entered as decimals (`1.5`) or fractions (`3/2`).
 - **Solution reveal** — click *Show Solution* to see the intended parameter values.
-- **Score tracking** — keeps a running score of correct answers vs. total attempts.
+- **Score tracking** — keeps a running score of correct answers vs. total attempts (Check Answer is disabled after a correct answer to prevent score inflation).
 
 ---
 
