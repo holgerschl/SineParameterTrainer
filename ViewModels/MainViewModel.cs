@@ -25,6 +25,38 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private bool _formulaVisible = true;
     [ObservableProperty] private bool _isCheckEnabled = true;
 
+    private string _lang = "de";
+
+    private static readonly Dictionary<string, Dictionary<string, string>> I18n = new()
+    {
+        ["title"] = new() { ["de"] = "Modellierung der allgemeinen Sinusfunktion", ["en"] = "Sine Parameter Trainer" },
+        ["subtitle"] = new() { ["de"] = "Bestimme die Parameter a, b, c, d aus dem Graphen", ["en"] = "Determine the parameters a, b, c, d from the graph" },
+        ["showFormula"] = new() { ["de"] = "Formel anzeigen", ["en"] = "Show formula" },
+        ["btnCheck"] = new() { ["de"] = "Antwort pr\u00fcfen", ["en"] = "Check Answer" },
+        ["btnNew"] = new() { ["de"] = "Neue Aufgabe", ["en"] = "New Problem" },
+        ["btnSolution"] = new() { ["de"] = "L\u00f6sung anzeigen", ["en"] = "Show Solution" },
+        ["measurement"] = new() { ["de"] = "Messung:", ["en"] = "Measurement:" },
+        ["dragHint"] = new() { ["de"] = "(Hilfslinien im Graphen ziehen)", ["en"] = "(drag the dashed lines on the plot)" },
+        ["score"] = new() { ["de"] = "Punkte: ", ["en"] = "Score: " },
+        ["correct"] = new() { ["de"] = "Richtig! Gut gemacht!", ["en"] = "Correct! Well done!" },
+        ["notQuite"] = new() { ["de"] = "Nicht ganz. Pr\u00fcfe:", ["en"] = "Not quite. Check:" },
+        ["invalidInput"] = new() { ["de"] = "Bitte g\u00fcltige Zahlen eingeben (z.B. 3, -1.5 oder 3/2).", ["en"] = "Please enter valid numbers for all parameters (e.g. 3, -1.5, or 3/2)." },
+        ["tryDifferent"] = new() { ["de"] = "Werte (versuche eine andere \u00e4quivalente Form)", ["en"] = "values (try a different equivalent form)" },
+    };
+
+    private string T(string key) => I18n.TryGetValue(key, out var d) && d.TryGetValue(_lang, out var v) ? v : key;
+
+    [ObservableProperty] private string _windowTitle = "";
+    [ObservableProperty] private string _headerTitle = "";
+    [ObservableProperty] private string _headerSubtitle = "";
+    [ObservableProperty] private string _lblShowFormula = "";
+    [ObservableProperty] private string _lblBtnCheck = "";
+    [ObservableProperty] private string _lblBtnNew = "";
+    [ObservableProperty] private string _lblBtnSolution = "";
+    [ObservableProperty] private string _lblMeasurement = "";
+    [ObservableProperty] private string _lblDragHint = "";
+    [ObservableProperty] private string _lblScore = "";
+
     public SineParameters? CurrentParameters { get; private set; }
 
     public Action<SineParameters>? OnNewProblem { get; set; }
@@ -32,6 +64,38 @@ public partial class MainViewModel : ObservableObject
     public MainViewModel(ISineCurveService curveService)
     {
         _curveService = curveService;
+        RefreshLabels();
+    }
+
+    [RelayCommand]
+    private void SetLanguage(string lang)
+    {
+        _lang = lang;
+        RefreshLabels();
+        RefreshScoreText();
+    }
+
+    private void RefreshLabels()
+    {
+        WindowTitle = T("title");
+        HeaderTitle = T("title");
+        HeaderSubtitle = T("subtitle");
+        LblShowFormula = T("showFormula");
+        LblBtnCheck = T("btnCheck");
+        LblBtnNew = T("btnNew");
+        LblBtnSolution = T("btnSolution");
+        LblMeasurement = T("measurement");
+        LblDragHint = T("dragHint");
+        LblScore = T("score");
+    }
+
+    private void RefreshScoreText()
+    {
+        if (string.IsNullOrEmpty(Feedback)) return;
+        if (FeedbackColor == "#10B981")
+            Feedback = $"{T("correct")}  ({Score} / {TotalAttempts})";
+        else if (FeedbackColor == "#EF4444" && !Feedback.Contains("(e.g.") && !Feedback.Contains("(z.B."))
+            Feedback = $"{T("notQuite")} ...  ({Score} / {TotalAttempts})";
     }
 
     [RelayCommand]
@@ -59,7 +123,7 @@ public partial class MainViewModel : ObservableObject
             !TryParseInput(UserC, out double c) ||
             !TryParseInput(UserD, out double d))
         {
-            Feedback = "Please enter valid numbers for all parameters (e.g. 3, -1.5, or 3/2).";
+            Feedback = T("invalidInput");
             FeedbackColor = "#EF4444";
             return;
         }
@@ -69,13 +133,12 @@ public partial class MainViewModel : ObservableObject
         if (FunctionsMatch(a, b, c, d, CurrentParameters))
         {
             Score++;
-            Feedback = $"Correct! Well done!  ({Score} / {TotalAttempts})";
+            Feedback = $"{T("correct")}  ({Score} / {TotalAttempts})";
             FeedbackColor = "#10B981";
             IsCheckEnabled = false;
             return;
         }
 
-        // Give specific feedback on which parameters look wrong (direct comparison)
         var wrong = new List<string>();
         if (Math.Abs(a - CurrentParameters.A) > 0.05) wrong.Add("a");
         if (Math.Abs(b - CurrentParameters.B) > 0.05) wrong.Add("b");
@@ -83,9 +146,9 @@ public partial class MainViewModel : ObservableObject
         if (Math.Abs(d - CurrentParameters.D) > 0.05) wrong.Add("d");
 
         if (wrong.Count == 0)
-            wrong.Add("values (try a different equivalent form)");
+            wrong.Add(T("tryDifferent"));
 
-        Feedback = $"Not quite. Check: {string.Join(", ", wrong)}  ({Score} / {TotalAttempts})";
+        Feedback = $"{T("notQuite")} {string.Join(", ", wrong)}  ({Score} / {TotalAttempts})";
         FeedbackColor = "#EF4444";
     }
 

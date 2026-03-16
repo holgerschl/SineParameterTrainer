@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ScottPlot="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF"
         xmlns:converters="clr-namespace:SineParameterTrainer.Converters"
-        Title="Sine Parameter Trainer"
+        Title="{Binding WindowTitle}"
         Icon="icon.png"
         Width="1050" Height="780"
         MinWidth="820" MinHeight="620"
@@ -88,12 +88,46 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <StackPanel Grid.Row="0" Margin="0,0,0,14">
-            <TextBlock Text="Sine Parameter Trainer"
-                       FontSize="28" FontWeight="Bold" Foreground="#1E293B"/>
-            <TextBlock Text="Determine the parameters a, b, c, d from the graph"
-                       FontSize="13" Foreground="#64748B" Margin="0,4,0,0"/>
-        </StackPanel>
+        <Grid Grid.Row="0" Margin="0,0,0,14">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="{Binding HeaderTitle}"
+                           FontSize="28" FontWeight="Bold" Foreground="#1E293B"/>
+                <TextBlock Text="{Binding HeaderSubtitle}"
+                           FontSize="13" Foreground="#64748B" Margin="0,4,0,0"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top">
+                <Button Content="DE" FontSize="13" FontWeight="SemiBold" Padding="10,5"
+                        Background="#3B82F6" Foreground="White" Cursor="Hand"
+                        BorderThickness="0" Margin="0,0,4,0"
+                        Command="{Binding SetLanguageCommand}" CommandParameter="de">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}" CornerRadius="4"
+                                    Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+                <Button Content="EN" FontSize="13" FontWeight="SemiBold" Padding="10,5"
+                        Background="#64748B" Foreground="White" Cursor="Hand"
+                        BorderThickness="0"
+                        Command="{Binding SetLanguageCommand}" CommandParameter="en">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}" CornerRadius="4"
+                                    Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </StackPanel>
+        </Grid>
 
         <!-- Plot Card -->
         <Border Grid.Row="1" Style="{StaticResource CardBorder}" Margin="0,0,0,14">
@@ -107,7 +141,7 @@
                 <!-- Formula toggle + colour-coded formula -->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
                             Margin="0,0,0,18">
-                    <CheckBox Content="Show formula" IsChecked="{Binding FormulaVisible}"
+                    <CheckBox Content="{Binding LblShowFormula}" IsChecked="{Binding FormulaVisible}"
                               VerticalAlignment="Center" Margin="0,0,16,0"
                               FontSize="13" Foreground="#94A3B8" Cursor="Hand"/>
                     <StackPanel Orientation="Horizontal"
@@ -173,14 +207,14 @@
                 <!-- Buttons -->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
                             Margin="0,0,0,14">
-                    <Button Content="Check Answer" Style="{StaticResource PrimaryButton}"
+                    <Button Content="{Binding LblBtnCheck}" Style="{StaticResource PrimaryButton}"
                             Background="#3B82F6"
                             Command="{Binding CheckAnswerCommand}"
                             IsEnabled="{Binding IsCheckEnabled}" Margin="0,0,12,0"/>
-                    <Button Content="New Problem" Style="{StaticResource PrimaryButton}"
+                    <Button Content="{Binding LblBtnNew}" Style="{StaticResource PrimaryButton}"
                             Background="#10B981"
                             Command="{Binding GenerateNewCommand}" Margin="0,0,12,0"/>
-                    <Button Content="Show Solution" Style="{StaticResource PrimaryButton}"
+                    <Button Content="{Binding LblBtnSolution}" Style="{StaticResource PrimaryButton}"
                             Background="#F59E0B"
                             Command="{Binding RevealSolutionCommand}"/>
                 </StackPanel>
@@ -188,7 +222,7 @@
                 <!-- Help-line distances -->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
                             Margin="0,0,0,10">
-                    <TextBlock Text="Measurement:" FontSize="14" Foreground="#94A3B8"
+                    <TextBlock Text="{Binding LblMeasurement}" FontSize="14" Foreground="#94A3B8"
                                VerticalAlignment="Center" Margin="0,0,12,0"/>
                     <Border Background="#FEF2F2" CornerRadius="6" Padding="10,4" Margin="0,0,10,0">
                         <TextBlock Text="{Binding DeltaX}" FontSize="14" FontWeight="SemiBold"
@@ -198,7 +232,7 @@
                         <TextBlock Text="{Binding DeltaY}" FontSize="14" FontWeight="SemiBold"
                                    Foreground="#16A34A" FontFamily="Consolas"/>
                     </Border>
-                    <TextBlock Text="(drag the dashed lines on the plot)" FontSize="12"
+                    <TextBlock Text="{Binding LblDragHint}" FontSize="12"
                                Foreground="#CBD5E1" VerticalAlignment="Center" Margin="12,0,0,0"/>
                 </StackPanel>
 
@@ -216,7 +250,7 @@
                 <!-- Score -->
                 <TextBlock HorizontalAlignment="Center" Margin="0,8,0,0"
                            FontSize="13" Foreground="#94A3B8">
-                    <Run Text="Score: "/>
+                    <Run Text="{Binding LblScore, Mode=OneWay}"/>
                     <Run Text="{Binding Score, Mode=OneWay}"/>
                     <Run Text=" / "/>
                     <Run Text="{Binding TotalAttempts, Mode=OneWay}"/>
